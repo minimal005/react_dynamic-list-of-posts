@@ -33,7 +33,7 @@ export const NewCommentForm: React.FC<Props> = props => {
     setIsLoading(false);
   };
 
-  const validateform = () => {
+  const validateForm = () => {
     setIsNameError(!name.length);
     setIsEmailError(!email.length);
     setIsCommentError(!commentText.length);
@@ -44,7 +44,7 @@ export const NewCommentForm: React.FC<Props> = props => {
   const handleAddComment = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (validateform()) {
+    if (validateForm()) {
       return;
     }
 

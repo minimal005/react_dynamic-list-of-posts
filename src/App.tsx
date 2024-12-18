@@ -19,7 +19,7 @@ export const App = () => {
   const [postSelected, setPostSelected] = useState<Post | null>(null);
 
   const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoadind] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isActiveListUsers, setIsActiveListUsers] = useState(false);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export const App = () => {
     }
 
     setPostSelected(null);
-    setIsLoadind(true);
+    setIsLoading(true);
     const getPostsByUser = async () => {
       try {
         const postsUser = await postsService.getPosts(userSelectedId);
@@ -39,7 +39,7 @@ export const App = () => {
         setIsError(true);
         setPostsByUser([]);
       } finally {
-        setIsLoadind(false);
+        setIsLoading(false);
       }
     };
 

@@ -320,7 +320,7 @@ describe('', () => {
         button().should('have.text', 'Choose a user');
       });
 
-      it.skip('should not show users list by default', () => {
+      it('should not show users list by default', () => {
         el().should('not.have.class', 'is-active');
         el().find('.dropdown-menu').should('not.be.visible');
       });
@@ -337,13 +337,13 @@ describe('', () => {
         users().eq(0).should('be.visible');
       });
 
-      it.skip('should have names in the list', () => {
+      it('should have names in the list', () => {
         users().eq(0).should('have.text', 'Leanne Graham');
         users().eq(3).should('have.text', 'Patricia Lebsack');
         users().eq(9).should('have.text', 'Clementina DuBuque');
       });
 
-      it.skip('should close dropdown after selecting a user', () => {
+      it('should close dropdown after selecting a user', () => {
         button().click();
         users().eq(3).click();
 
