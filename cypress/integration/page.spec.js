@@ -254,7 +254,7 @@ describe('', () => {
         cy.get('@users').should('have.callCount', 1);
       });
 
-      it.skip('should not request posts from API', () => {
+      it('should not request posts from API', () => {
         page.mockUsers();
         page.spyOn('**/posts**', 'posts');
 
@@ -265,7 +265,7 @@ describe('', () => {
         cy.get('@posts').should('not.be.called');
       });
 
-      it.skip('should not request comments from API', () => {
+      it('should not request comments from API', () => {
         page.mockUsers();
         page.mockUser1Posts();
         page.spyOn('**/comments**', 'comments');
@@ -283,21 +283,21 @@ describe('', () => {
     const { el, button, users, selectedUser } = userSelector;
 
     describe('', () => {
-      it.skip('should have all the loaded users', () => {
+      it('should have all the loaded users', () => {
         page.mockUsers();
         cy.visit('/');
 
         users().should('have.length', 10);
       });
 
-      it.skip('should not have users hardcoded', () => {
+      it('should not have users hardcoded', () => {
         cy.intercept('**/users', { fixture: 'someUsers' });
         cy.visit('/');
 
         users().should('have.length', 3);
       });
 
-      it.skip('should not have users before they are loaded', () => {
+      it('should not have users before they are loaded', () => {
         cy.clock();
         page.mockUsers();
         cy.visit('/');

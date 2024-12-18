@@ -36,9 +36,3 @@ export const Post: React.FC<Props> = props => {
     </tr>
   );
 };
-
-{
-  <button type="button" data-cy="PostButton" className="button is-link">
-    Close
-  </button>;
-}

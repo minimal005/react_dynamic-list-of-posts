@@ -30,8 +30,8 @@ function request<T>(
   return wait(300)
     .then(() => fetch(BASE_URL + url, options))
     .then(response => response.json())
-    .catch(() => {
-      throw new Error();
+    .catch(error => {
+      throw new Error(error);
     });
 }
 

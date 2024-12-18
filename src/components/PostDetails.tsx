@@ -13,11 +13,11 @@ export const PostDetails: React.FC<Props> = ({ postSelected }) => {
   const [comments, setComments] = useState<CommentItem[]>([]);
 
   const [isError, setIsError] = useState<boolean>(false);
-  const [isLoading, setIsLoadind] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isAddingComment, setIsAddingComment] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsLoadind(true);
+    setIsLoading(true);
 
     commentsService
       .getComments(postSelected.id)
@@ -25,7 +25,7 @@ export const PostDetails: React.FC<Props> = ({ postSelected }) => {
       .catch(() => {
         setIsError(true);
       })
-      .finally(() => setIsLoadind(false));
+      .finally(() => setIsLoading(false));
   }, [postSelected]);
 
   useEffect(() => {
@@ -47,64 +47,62 @@ export const PostDetails: React.FC<Props> = ({ postSelected }) => {
 
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            #{postSelected.id}: {postSelected.title}
-          </h2>
+      <div className="block">
+        <h2 data-cy="PostTitle">
+          #{postSelected.id}: {postSelected.title}
+        </h2>
 
-          <p data-cy="PostBody">{postSelected.body}</p>
-        </div>
+        <p data-cy="PostBody">{postSelected.body}</p>
+      </div>
 
-        <div className="block">
-          {isLoading && <Loader />}
+      <div className="block">
+        {isLoading && <Loader />}
 
-          {isError && !isLoading && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
-            </div>
-          )}
+        {isError && !isLoading && (
+          <div className="notification is-danger" data-cy="CommentsError">
+            Something went wrong
+          </div>
+        )}
 
-          {!comments.length && !isError && !isLoading && (
-            <p className="title is-4" data-cy="NoCommentsMessage">
-              No comments yet
-            </p>
-          )}
+        {!comments.length && !isError && !isLoading && (
+          <p className="title is-4" data-cy="NoCommentsMessage">
+            No comments yet
+          </p>
+        )}
 
-          {!!comments.length && !isLoading && !isError && (
-            <>
-              <p className="title is-4">Comments:</p>
-              {comments.map(comment => (
-                <Comment
-                  key={comment.id}
-                  comment={comment}
-                  handleDeleteComment={handleDeleteComment}
-                />
-              ))}
-            </>
-          )}
+        {!!comments.length && !isLoading && !isError && (
+          <>
+            <p className="title is-4">Comments:</p>
+            {comments.map(comment => (
+              <Comment
+                key={comment.id}
+                comment={comment}
+                handleDeleteComment={handleDeleteComment}
+              />
+            ))}
+          </>
+        )}
 
-          {!isLoading && !isError && !isAddingComment && (
-            <button
-              onClick={() => setIsAddingComment(true)}
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-            >
-              Write a comment
-            </button>
-          )}
-        </div>
-
-        {isAddingComment && (
-          <NewCommentForm
-            postId={postSelected.id}
-            addNewComment={addNewComment}
-            setIsError={setIsError}
-            setIsAddingComment={setIsAddingComment}
-          />
+        {!isLoading && !isError && !isAddingComment && (
+          <button
+            onClick={() => setIsAddingComment(true)}
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+          >
+            Write a comment
+          </button>
         )}
       </div>
+
+      {isAddingComment && (
+        <NewCommentForm
+          postId={postSelected.id}
+          addNewComment={addNewComment}
+          setIsError={setIsError}
+          setIsAddingComment={setIsAddingComment}
+        />
+      )}
     </div>
   );
 };
