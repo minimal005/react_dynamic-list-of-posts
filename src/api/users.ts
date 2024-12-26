@@ -1,20 +1,19 @@
 import { client } from '../utils/fetchClient';
 import { User } from '../types/User';
-
-const url = `/users`;
+import { ENDPOINTS } from '../helpers/endPointsHelper';
 
 export const getUsers = () => {
-  return client.get<User[]>(`${url}`);
+  return client.get<User[]>(`${ENDPOINTS.users}`);
 };
 
 export const createUser = (user: Omit<User, 'id'>) => {
-  return client.post<User>(`${url}`, user);
+  return client.post<User>(`${ENDPOINTS.users}`, user);
 };
 
 export const editUser = (user: User) => {
-  return client.patch<User>(`${url}/${user.id}`, user);
+  return client.patch<User>(`${ENDPOINTS.users}/${user.id}`, user);
 };
 
 export const deleteUser = (userId: number) => {
-  return client.delete(`${url}/${userId}`);
+  return client.delete(`${ENDPOINTS.users}/${userId}`);
 };

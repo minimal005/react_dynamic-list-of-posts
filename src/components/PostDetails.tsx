@@ -7,9 +7,9 @@ import { Post } from '../types/Post';
 import Comment from './Comment';
 
 type Props = {
-  postSelected: Post;
+  selectedPost: Post;
 };
-export const PostDetails: React.FC<Props> = ({ postSelected }) => {
+export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [comments, setComments] = useState<CommentItem[]>([]);
 
   const [isError, setIsError] = useState<boolean>(false);
@@ -18,28 +18,33 @@ export const PostDetails: React.FC<Props> = ({ postSelected }) => {
 
   useEffect(() => {
     setIsLoading(true);
+    (async () => {
+      try {
+        const getAllComments = await commentsService.getComments(
+          selectedPost.id,
+        );
 
-    commentsService
-      .getComments(postSelected.id)
-      .then(setComments)
-      .catch(() => {
+        setComments(getAllComments);
+      } catch (error) {
         setIsError(true);
-      })
-      .finally(() => setIsLoading(false));
-  }, [postSelected]);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, [selectedPost]);
 
   useEffect(() => {
     setIsAddingComment(false);
-  }, [postSelected]);
+  }, [selectedPost]);
 
   const addNewComment = useCallback((newComment: CommentItem) => {
     setComments(prevComments => [...prevComments, newComment]);
   }, []);
 
-  const handleDeleteComment = useCallback((commentId: number) => {
+  const handleDeleteComment = useCallback(async (commentId: number) => {
     try {
       setComments(prev => prev.filter(comment => comment.id !== commentId));
-      commentsService.deleteComment(commentId);
+      await commentsService.deleteComment(commentId);
     } catch (error) {
       setIsError(true);
     }
@@ -49,10 +54,10 @@ export const PostDetails: React.FC<Props> = ({ postSelected }) => {
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          #{postSelected.id}: {postSelected.title}
+          #{selectedPost.id}: {selectedPost.title}
         </h2>
 
-        <p data-cy="PostBody">{postSelected.body}</p>
+        <p data-cy="PostBody">{selectedPost.body}</p>
       </div>
 
       <div className="block">
@@ -97,7 +102,7 @@ export const PostDetails: React.FC<Props> = ({ postSelected }) => {
 
       {isAddingComment && (
         <NewCommentForm
-          postId={postSelected.id}
+          postId={selectedPost.id}
           addNewComment={addNewComment}
           setIsError={setIsError}
           setIsAddingComment={setIsAddingComment}

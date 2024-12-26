@@ -70,17 +70,17 @@ export const NewCommentForm: React.FC<Props> = props => {
     }
   };
 
-  const handleAddName = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsNameError(false);
     setName(event.target.value);
   };
 
-  const handleAddEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsEmailError(false);
     setEmail(event.target.value);
   };
 
-  const handleAddingComment = (
+  const handleCommentChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     setIsCommentError(false);
@@ -97,7 +97,7 @@ export const NewCommentForm: React.FC<Props> = props => {
         <div className="control has-icons-left has-icons-right">
           <input
             value={name}
-            onChange={handleAddName}
+            onChange={handleNameChange}
             type="text"
             name="name"
             id="comment-author-name"
@@ -134,7 +134,7 @@ export const NewCommentForm: React.FC<Props> = props => {
         <div className="control has-icons-left has-icons-right">
           <input
             value={email}
-            onChange={handleAddEmail}
+            onChange={handleEmailChange}
             type="text"
             name="email"
             id="comment-author-email"
@@ -171,7 +171,7 @@ export const NewCommentForm: React.FC<Props> = props => {
         <div className="control">
           <textarea
             value={commentText}
-            onChange={handleAddingComment}
+            onChange={handleCommentChange}
             id="comment-body"
             name="body"
             placeholder="Type comment here"

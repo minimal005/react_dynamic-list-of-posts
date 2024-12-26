@@ -1,22 +1,25 @@
 import React from 'react';
 import { Post as PostUser } from '../types/Post';
+import cn from 'classnames';
 
 type Props = {
   post: PostUser;
-  setCurrentPost: (post: PostUser | null) => void;
-  currentPost: PostUser | null;
+  setSelectedPost: (post: PostUser | null) => void;
+  selectedPost: PostUser | null;
 };
+
 export const Post: React.FC<Props> = props => {
-  const { post, setCurrentPost, currentPost } = props;
+  const { post, setSelectedPost, selectedPost } = props;
+
+  const isNotCurrentPost = selectedPost?.id !== post.id;
+
   const handleOpenDetails = () => {
-    if (!currentPost || currentPost.id !== post.id) {
-      setCurrentPost(post);
+    if (!selectedPost || isNotCurrentPost) {
+      setSelectedPost(post);
     } else {
-      setCurrentPost(null);
+      setSelectedPost(null);
     }
   };
-
-  const openClassButton = currentPost?.id === post.id ? '' : 'is-light';
 
   return (
     <tr data-cy="Post">
@@ -28,9 +31,11 @@ export const Post: React.FC<Props> = props => {
           onClick={handleOpenDetails}
           type="button"
           data-cy="PostButton"
-          className={`button is-link ${openClassButton}`}
+          className={cn(`button is-link`, {
+            'is-light': isNotCurrentPost,
+          })}
         >
-          {currentPost?.id === post.id ? 'Close' : 'Open'}
+          {isNotCurrentPost ? 'Open' : 'Close'}
         </button>
       </td>
     </tr>

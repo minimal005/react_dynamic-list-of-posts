@@ -1,53 +1,45 @@
-import classNames from 'classnames';
+import { useCallback, useState } from 'react';
 import * as postsService from './api/posts';
+
+import { PostsList } from './components/PostsList';
+import { UserSelector } from './components/UserSelector';
+import { Loader } from './components/Loader';
+import { Sidebar } from './components/Sidebar';
+
+import { Post } from './types/Post';
+import { User } from './types/User';
 
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
-import { useEffect, useState } from 'react';
-import { Post } from './types/Post';
-
 export const App = () => {
-  const [userSelectedId, setUserSelectedId] = useState<number | null>(null);
-
-  const [postsByUser, setPostsByUser] = useState<Post[]>([]);
-  const [postSelected, setPostSelected] = useState<Post | null>(null);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [activeUser, setActiveUser] = useState<User | null>(null);
 
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isActiveListUsers, setIsActiveListUsers] = useState(false);
 
-  useEffect(() => {
-    if (!userSelectedId) {
-      return;
-    }
-
-    setPostSelected(null);
+  const getPostsByUser = useCallback(async (userId: number) => {
     setIsLoading(true);
-    const getPostsByUser = async () => {
-      try {
-        const postsUser = await postsService.getPosts(userSelectedId);
+    try {
+      const postsUser = await postsService.getPosts(userId);
 
-        setPostSelected(null);
-        setPostsByUser(postsUser);
-      } catch (error) {
-        setIsError(true);
-        setPostsByUser([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      setSelectedPost(null);
+      setUserPosts(postsUser);
+    } catch (error) {
+      setIsError(true);
+      setUserPosts([]);
+    } finally {
+      setIsLoading(false);
+      setSelectedPost(null);
+    }
+  }, []);
 
-    getPostsByUser();
-  }, [userSelectedId]);
-
-  const showMessageAboutNotPosts =
-    !postsByUser.length && userSelectedId && !isLoading && !isError;
+  const isShowMessageAboutNotPosts =
+    !userPosts.length && !isLoading && !isError && activeUser;
 
   return (
     <main className="section" onClick={() => setIsActiveListUsers(false)}>
@@ -58,15 +50,17 @@ export const App = () => {
               <div className="block">
                 <UserSelector
                   setIsError={setIsError}
-                  setUserSelectedId={setUserSelectedId}
+                  getPostsByUser={getPostsByUser}
                   isActive={isActiveListUsers}
                   setIsActive={setIsActiveListUsers}
-                  setPostsByUser={setPostsByUser}
+                  setUserPosts={setUserPosts}
+                  activeUser={activeUser}
+                  setActiveUser={setActiveUser}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!userSelectedId && !isLoading && (
+                {!isLoading && !activeUser && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
@@ -81,38 +75,24 @@ export const App = () => {
                   </div>
                 )}
 
-                {showMessageAboutNotPosts && (
+                {isShowMessageAboutNotPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {!!postsByUser.length && (
+                {!!userPosts.length && (
                   <PostsList
-                    postsByUser={postsByUser}
-                    setPostSelected={setPostSelected}
+                    userPosts={userPosts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
                   />
                 )}
               </div>
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              { 'Sidebar--open': !!postSelected },
-            )}
-          >
-            {postSelected && (
-              <div className="tile is-child box is-success ">
-                <PostDetails postSelected={postSelected} />
-              </div>
-            )}
-          </div>
+          <Sidebar selectedPost={selectedPost} />
         </div>
       </div>
     </main>

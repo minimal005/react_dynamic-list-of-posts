@@ -1,18 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Post as PostUser } from '../types/Post';
 import { Post } from './Post';
 
 type Props = {
-  postsByUser: PostUser[];
-  setPostSelected: (post: PostUser | null) => void;
+  userPosts: PostUser[];
+  selectedPost: PostUser | null;
+  setSelectedPost: (post: PostUser | null) => void;
 };
 export const PostsList: React.FC<Props> = props => {
-  const { postsByUser, setPostSelected } = props;
-  const [currentPost, setCurrentPost] = useState<PostUser | null>(null);
-
-  useEffect(() => {
-    setPostSelected(currentPost);
-  }, [currentPost, setPostSelected]);
+  const { userPosts, setSelectedPost, selectedPost } = props;
 
   return (
     <div data-cy="PostsList">
@@ -28,12 +24,12 @@ export const PostsList: React.FC<Props> = props => {
         </thead>
 
         <tbody>
-          {postsByUser.map(post => (
+          {userPosts.map(post => (
             <Post
               key={post.id}
               post={post}
-              setCurrentPost={setCurrentPost}
-              currentPost={currentPost}
+              setSelectedPost={setSelectedPost}
+              selectedPost={selectedPost}
             />
           ))}
         </tbody>

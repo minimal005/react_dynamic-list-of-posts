@@ -7,22 +7,25 @@ import { Post } from '../types/Post';
 
 type Props = {
   setIsError: (error: boolean) => void;
-  setUserSelectedId: (userId: number) => void;
+  getPostsByUser: (userId: number) => void;
   isActive: boolean;
   setIsActive: (isActive: boolean) => void;
-  setPostsByUser: Dispatch<SetStateAction<Post[]>>;
+  setUserPosts: Dispatch<SetStateAction<Post[]>>;
+  activeUser: User | null;
+  setActiveUser: Dispatch<SetStateAction<User | null>>;
 };
 export const UserSelector: React.FC<Props> = props => {
   const {
     setIsError,
-    setUserSelectedId,
+    getPostsByUser,
     isActive,
     setIsActive,
-    setPostsByUser,
+    setUserPosts,
+    activeUser,
+    setActiveUser,
   } = props;
 
   const [users, setUsers] = useState<User[]>([]);
-  const [activeUser, setActiveUser] = useState<User | null>(null);
 
   useEffect(() => {
     usersService
@@ -36,9 +39,9 @@ export const UserSelector: React.FC<Props> = props => {
   }, [setIsActive]);
 
   const handleClickOnUser = (user: User) => {
-    setPostsByUser([]);
+    setUserPosts([]);
     setActiveUser(user);
-    setUserSelectedId(user.id);
+    getPostsByUser(user.id);
     setIsActive(false);
   };
 
